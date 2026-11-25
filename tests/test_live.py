@@ -5,7 +5,17 @@ import pytest
 
 from chainkit import pyth
 from chainkit.addresses import derive_ata
-from chainkit.constants import TOKEN_ACCOUNT_SIZE, TOKEN_PROGRAM, genesis_hash, usdc_mint
+from chainkit.constants import (
+    ATA_PROGRAM,
+    COMPUTE_BUDGET_PROGRAM,
+    MEMO_PROGRAM,
+    SYSTEM_PROGRAM,
+    TOKEN_2022_PROGRAM,
+    TOKEN_ACCOUNT_SIZE,
+    TOKEN_PROGRAM,
+    genesis_hash,
+    usdc_mint,
+)
 from chainkit.rpc import SolanaRpc
 
 pytestmark = [pytest.mark.live,
@@ -50,3 +60,25 @@ def test_usdc_mint_is_circles_and_has_supply():
 def test_pyth_sol_usd_on_mainnet():
     reading = pyth.read_price(SolanaRpc([RPC['mainnet-beta']]))
     assert reading.fully_verified and 1 < reading.price < 100_000
+
+
+@pytest.mark.parametrize('program', [TOKEN_PROGRAM, TOKEN_2022_PROGRAM, ATA_PROGRAM, COMPUTE_BUDGET_PROGRAM,
+                                     MEMO_PROGRAM, SYSTEM_PROGRAM, pyth.PYTH_RECEIVER_PROGRAM])
+def test_every_program_id_is_a_real_executable_program(program):
+    account = SolanaRpc([RPC['mainnet-beta']]).account_info(program, encoding='base64')
+    assert account is not None and account['executable'] is True
+
+
+def test_v0_transactions_index_balances_into_the_full_account_list():
+    """parse.usdc_delta relies on jsonParsed accountKeys including lookup-table addresses for v0 transactions."""
+    rpc = SolanaRpc([RPC['mainnet-beta']])
+    mint = usdc_mint('mainnet-beta')
+    for item in rpc.signatures_for_address(mint, limit=40):
+        tx = rpc.transaction(item['signature'], commitment='confirmed')
+        if not tx or tx.get('version') != 0:
+            continue
+        keys = tx['transaction']['message']['accountKeys']
+        rows = (tx['meta'].get('preTokenBalances') or []) + (tx['meta'].get('postTokenBalances') or [])
+        assert all(row['accountIndex'] < len(keys) for row in rows)
+        return
+    pytest.skip('no v0 transaction in the sample')

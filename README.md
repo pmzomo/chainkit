@@ -1,5 +1,10 @@
 # chainkit
 
+[![CI](https://github.com/pmzomo/chainkit/actions/workflows/ci.yml/badge.svg)](https://github.com/pmzomo/chainkit/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/solana-chainkit.svg)](https://pypi.org/project/solana-chainkit/)
+[![Python](https://img.shields.io/pypi/pyversions/solana-chainkit.svg)](https://pypi.org/project/solana-chainkit/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/pmzomo/chainkit/blob/main/LICENSE)
+
 **Production-grade building blocks for USDC payments on Solana, in Python.**
 
 chainkit packages the parts of a Solana payments backend that are easy to get subtly wrong: exact money amounts,
@@ -107,7 +112,7 @@ print(price.price, '+/-', price.conf)    # Decimal('72.70629150') +/- Decimal('0
 guardians, the SOL/USD feed, at most 5 minutes old and within a 2% confidence band. Any Pyth feed works by passing its
 price account and feed id.
 
-More in [`examples/`](examples):
+More in [`examples/`](https://github.com/pmzomo/chainkit/tree/main/examples):
 
 | Example | Network |
 |---|---|
@@ -157,11 +162,16 @@ CHAINKIT_LIVE=1 pytest -m live                     # optional: checks against pu
 ruff check . && mypy
 ```
 
+## Documentation
+
+The full system specification, with diagrams of every flow, is in
+[docs/SPECIFICATION.md](https://github.com/pmzomo/chainkit/blob/main/docs/SPECIFICATION.md).
+
 ## Status
 
-Version 0.1.0, beta. The API may still change before 1.0; changes are listed in [CHANGELOG.md](CHANGELOG.md).
-Security issues: see [SECURITY.md](SECURITY.md).
+Version 0.1.0, beta. The API may still change before 1.0; changes are listed in [CHANGELOG.md](https://github.com/pmzomo/chainkit/blob/main/CHANGELOG.md).
+Security issues: see [SECURITY.md](https://github.com/pmzomo/chainkit/blob/main/SECURITY.md).
 
 ## License
 
-Apache License 2.0. Copyright 2026 Global TalentBridge AI LLC. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+Apache License 2.0. Copyright 2026 Global TalentBridge AI LLC. See [LICENSE](https://github.com/pmzomo/chainkit/blob/main/LICENSE) and [NOTICE](https://github.com/pmzomo/chainkit/blob/main/NOTICE).
